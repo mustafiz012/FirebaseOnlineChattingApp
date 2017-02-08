@@ -1,0 +1,45 @@
+{
+  "project_info": {
+    "project_number": "183698579811",
+    "firebase_url": "https://fir-db-f8c8c.firebaseio.com",
+    "project_id": "fir-db-f8c8c",
+    "storage_bucket": "fir-db-f8c8c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:183698579811:android:af4363bd9a39f62a",
+        "android_client_info": {
+          "package_name": "findyourself.musta.firebasedb"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "183698579811-7tfbrivt0mg1l1re0ifhktutuk3othl3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcwvTkcTIHUfKsKZ89eTJrlf448ilK_2M"
+        },
+        {
+          "current_key": "AIzaSyBVwZO5mXbW4d9SXF46iGhvXDeWHDxlDP0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
