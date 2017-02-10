@@ -3,6 +3,7 @@ package findyourself.musta.firebasedb;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
 	private ArrayList<String> mListOfRooms = new ArrayList<>();
 	private ArrayAdapter<String> arrayAdapter = null;
 	private String username = null;
+	boolean userEntered = false, onBackPressed = false, okElseClicked = false;
 	private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void addUsername(){
+		//userEntered = false;
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Give your username");
 		final EditText nameField = new EditText(this);
@@ -108,7 +112,17 @@ public class MainActivity extends AppCompatActivity {
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				username = nameField.getText().toString();
+				if (!nameField.getText().toString().isEmpty())
+				{
+					username = nameField.getText().toString();
+					userEntered = true;
+				}
+				else {
+					Toast.makeText(getApplicationContext(), "No user info provided.", Toast.LENGTH_SHORT).show();
+					//userEntered = true;
+					okElseClicked = true;
+					addUsername();
+				}
 			}
 		});
 		builder.setNegativeButton("Exit", new DialogInterface.OnClickListener() {
@@ -117,7 +131,30 @@ public class MainActivity extends AppCompatActivity {
 				finish();
 			}
 		});
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+			builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+				@Override
+				public void onDismiss(DialogInterface dialog) {
+					if (okElseClicked)
+					{
+						Toast.makeText(getApplicationContext(), "Enter username.", Toast.LENGTH_SHORT).show();
+						addUsername();
+					}
+					else if (!userEntered)
+					{
+						Toast.makeText(getApplicationContext(), "Exiting application as your wish.", Toast.LENGTH_SHORT).show();
+						MainActivity.this.finish();
+					}
+				}
+			});
+		}
 		builder.show();
+	}
+
+	@Override
+	public void onBackPressed() {
+		onBackPressed = true;
+		super.onBackPressed();
 	}
 
 	@Override
