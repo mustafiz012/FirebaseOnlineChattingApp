@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 	private ArrayList<String> mListOfRooms = new ArrayList<>();
 	private ArrayAdapter<String> arrayAdapter = null;
 	private String username = null;
-	boolean userEntered = false, onBackPressed = false, okElseClicked = false;
+	boolean userEntered = false, okElseClicked = false;
 	private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -149,12 +149,6 @@ public class MainActivity extends AppCompatActivity {
 			});
 		}
 		builder.show();
-	}
-
-	@Override
-	public void onBackPressed() {
-		onBackPressed = true;
-		super.onBackPressed();
 	}
 
 	@Override
