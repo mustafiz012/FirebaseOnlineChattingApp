@@ -41,8 +41,9 @@ public class MainActivity extends AppCompatActivity {
 	private ArrayList<String> mListOfRooms = new ArrayList<>();
 	private ArrayAdapter<String> arrayAdapter = null;
 	private String username = null;
-	boolean userEntered = false, okElseClicked = false;
+	boolean userEntered = false, okElseClicked = false, positiveButtonPressed = false;
 	private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -79,8 +80,8 @@ public class MainActivity extends AppCompatActivity {
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				Set<String> set = new HashSet<String>();
 				Iterator iterator = dataSnapshot.getChildren().iterator();
-				while (iterator.hasNext()){
-					set.add(((DataSnapshot)iterator.next()).getKey());
+				while (iterator.hasNext()) {
+					set.add(((DataSnapshot) iterator.next()).getKey());
 				}
 				mListOfRooms.clear();
 				mListOfRooms.addAll(set);
@@ -96,14 +97,14 @@ public class MainActivity extends AppCompatActivity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Intent intent = new Intent(getApplicationContext(), GoppoActivity.class);
-				intent.putExtra("room_name", ((TextView)view).getText().toString());
+				intent.putExtra("room_name", ((TextView) view).getText().toString());
 				intent.putExtra("username", username);
 				startActivity(intent);
 			}
 		});
 	}
 
-	private void addUsername(){
+	private void addUsername() {
 		//userEntered = false;
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setTitle("Give your username");
@@ -112,14 +113,17 @@ public class MainActivity extends AppCompatActivity {
 		builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				if (!nameField.getText().toString().isEmpty())
-				{
-					username = nameField.getText().toString();
+				positiveButtonPressed = true;
+				String un = nameField.getText().toString();
+				if (!un.isEmpty()) {
+					username = un;
 					userEntered = true;
-				}
-				else {
+					okElseClicked = false;
+				} else if (un.isEmpty()) {
+					username = "";
+					nameField.setText("");
 					Toast.makeText(getApplicationContext(), "No user info provided.", Toast.LENGTH_SHORT).show();
-					//userEntered = true;
+					userEntered = false;
 					okElseClicked = true;
 					addUsername();
 				}
@@ -131,23 +135,20 @@ public class MainActivity extends AppCompatActivity {
 				finish();
 			}
 		});
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+		/*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 			builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
 				@Override
 				public void onDismiss(DialogInterface dialog) {
-					if (okElseClicked)
-					{
+					if (username != null && username.isEmpty() && positiveButtonPressed) {
 						Toast.makeText(getApplicationContext(), "Enter username.", Toast.LENGTH_SHORT).show();
 						addUsername();
-					}
-					else if (!userEntered)
-					{
+					} else if (username != null && username.isEmpty()) {
 						Toast.makeText(getApplicationContext(), "Exiting application as your wish.", Toast.LENGTH_SHORT).show();
 						MainActivity.this.finish();
 					}
 				}
 			});
-		}
+		}*/
 		builder.show();
 	}
 
