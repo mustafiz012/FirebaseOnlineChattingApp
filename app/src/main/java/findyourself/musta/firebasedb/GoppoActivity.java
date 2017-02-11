@@ -1,5 +1,7 @@
 package findyourself.musta.firebasedb;
 
+import android.support.v7.app.ActionBar;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -7,6 +9,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +36,7 @@ public class GoppoActivity extends AppCompatActivity {
 	private String username, roomName;
 	private DatabaseReference root;
 	private String temp_unique_key;
+	ActionBar actionBar = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +44,9 @@ public class GoppoActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_goppo);
 		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
+		/*actionBar = getSupportActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setHomeButtonEnabled(true);*/
 		/*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -53,7 +61,7 @@ public class GoppoActivity extends AppCompatActivity {
 		messageScroller = (ScrollView) findViewById(R.id.message_scroller);
 		username = getIntent().getExtras().getString("username").toString();
 		roomName = getIntent().getExtras().getString("room_name").toString();
-		setTitle(getString(R.string.title_activity_goppo)+" - "+roomName);
+		setTitle(getString(R.string.title_activity_goppo) + " - " + roomName);
 		btnSend = (Button) findViewById(R.id.btn_send_single_message);
 		etSingleText.addTextChangedListener(new TextWatcher() {
 			@Override
@@ -63,7 +71,7 @@ public class GoppoActivity extends AppCompatActivity {
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if(!etSingleText.getText().toString().isEmpty())
+				if (!etSingleText.getText().toString().isEmpty())
 					btnSend.setEnabled(true);
 				else
 					btnSend.setEnabled(false);
@@ -83,7 +91,7 @@ public class GoppoActivity extends AppCompatActivity {
 				root.updateChildren(map);
 				DatabaseReference message_root = root.child(temp_unique_key);
 				Map<String, Object> messagingInfoMapping = new HashMap<String, Object>();
-				if(!username.isEmpty())
+				if (!username.isEmpty())
 					messagingInfoMapping.put("name", username);
 				else
 					messagingInfoMapping.put("name", "Unknown");
@@ -122,14 +130,29 @@ public class GoppoActivity extends AppCompatActivity {
 	}
 
 	private String messageUpdate, usernameUpdate;
+
 	private void updateChatConversation(DataSnapshot dataSnapshot) {
 		Iterator iterator = dataSnapshot.getChildren().iterator();
-		while (iterator.hasNext()){
-			messageUpdate = (String) ((DataSnapshot)iterator.next()).getValue();
-			usernameUpdate = (String) ((DataSnapshot)iterator.next()).getValue();
-			tvSingleText.append(usernameUpdate+": "+messageUpdate+"\n");
+		while (iterator.hasNext()) {
+			messageUpdate = (String) ((DataSnapshot) iterator.next()).getValue();
+			usernameUpdate = (String) ((DataSnapshot) iterator.next()).getValue();
+			tvSingleText.append(usernameUpdate + ": " + messageUpdate + "\n");
 		}
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.menu_main, menu);
+		return true;
+	}
 
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if (id == R.id.action_about) {
+			startActivity(new Intent(getApplicationContext(), AboutActivity.class));
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
 }

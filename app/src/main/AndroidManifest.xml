@@ -23,7 +23,10 @@
         <activity
             android:name=".GoppoActivity"
             android:label="@string/title_activity_goppo"
+            android:parentActivityName=".MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+        <activity android:name=".AboutActivity">
         </activity>
     </application>
 
