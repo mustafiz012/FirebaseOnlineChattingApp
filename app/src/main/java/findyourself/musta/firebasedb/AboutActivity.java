@@ -1,16 +1,12 @@
 package findyourself.musta.firebasedb;
 
-import android.app.ActionBar;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.Button;
-import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class AboutActivity extends AppCompatActivity {
 
-	private String versionName = null;
 	//ActionBar actionBar = getActionBar();
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +15,8 @@ public class AboutActivity extends AppCompatActivity {
 		/*actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);*/
 		int versionCode = BuildConfig.VERSION_CODE;
-		versionName = BuildConfig.VERSION_NAME;
-		final Button appVersion = (Button) findViewById(R.id.app_version);
+		String versionName = BuildConfig.VERSION_NAME;
+		final Button appVersion = findViewById(R.id.app_version);
 		appVersion.setEnabled(false);
 		/*try {
 			PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
@@ -28,7 +24,7 @@ public class AboutActivity extends AppCompatActivity {
 		} catch (PackageManager.NameNotFoundException e) {
 			e.printStackTrace();
 		}*/
-		if (versionName!=null)
-			appVersion.setText("App Version: "+versionName);
+		if (versionName != null)
+			appVersion.setText("App Version: " + versionName);
 	}
 }

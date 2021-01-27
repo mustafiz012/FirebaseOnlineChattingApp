@@ -1,12 +1,7 @@
 package findyourself.musta.firebasedb;
 
-import android.support.v7.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -16,6 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -33,16 +32,15 @@ public class GoppoActivity extends AppCompatActivity {
 	private EditText etSingleText = null;
 	private TextView tvSingleText = null;
 	private ScrollView messageScroller = null;
-	private String username, roomName;
+	private String username;
 	private DatabaseReference root;
 	private String temp_unique_key;
-	ActionBar actionBar = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_goppo);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		/*actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -56,13 +54,13 @@ public class GoppoActivity extends AppCompatActivity {
 			}
 		});*/
 
-		etSingleText = (EditText) findViewById(R.id.et_type_single_message);
-		tvSingleText = (TextView) findViewById(R.id.tv_single_text);
-		messageScroller = (ScrollView) findViewById(R.id.message_scroller);
-		username = getIntent().getExtras().getString("username").toString();
-		roomName = getIntent().getExtras().getString("room_name").toString();
+		etSingleText = findViewById(R.id.et_type_single_message);
+		tvSingleText = findViewById(R.id.tv_single_text);
+		messageScroller = findViewById(R.id.message_scroller);
+		username = getIntent().getExtras().getString("username");
+		String roomName = getIntent().getExtras().getString("room_name");
 		setTitle(getString(R.string.title_activity_goppo) + " - " + roomName);
-		btnSend = (Button) findViewById(R.id.btn_send_single_message);
+		btnSend = findViewById(R.id.btn_send_single_message);
 		etSingleText.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -71,10 +69,7 @@ public class GoppoActivity extends AppCompatActivity {
 
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
-				if (!etSingleText.getText().toString().isEmpty())
-					btnSend.setEnabled(true);
-				else
-					btnSend.setEnabled(false);
+				btnSend.setEnabled(!etSingleText.getText().toString().isEmpty());
 			}
 
 			@Override
@@ -103,39 +98,37 @@ public class GoppoActivity extends AppCompatActivity {
 		});
 		root.addChildEventListener(new ChildEventListener() {
 			@Override
-			public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+			public void onChildAdded(@NonNull DataSnapshot dataSnapshot, String s) {
 				updateChatConversation(dataSnapshot);
 			}
 
 			@Override
-			public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+			public void onChildChanged(@NonNull DataSnapshot dataSnapshot, String s) {
 				updateChatConversation(dataSnapshot);
 			}
 
 			@Override
-			public void onChildRemoved(DataSnapshot dataSnapshot) {
+			public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
 
 			}
 
 			@Override
-			public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+			public void onChildMoved(@NonNull DataSnapshot dataSnapshot, String s) {
 
 			}
 
 			@Override
-			public void onCancelled(DatabaseError databaseError) {
+			public void onCancelled(@NonNull DatabaseError databaseError) {
 
 			}
 		});
 	}
 
-	private String messageUpdate, usernameUpdate;
-
 	private void updateChatConversation(DataSnapshot dataSnapshot) {
 		Iterator iterator = dataSnapshot.getChildren().iterator();
 		while (iterator.hasNext()) {
-			messageUpdate = (String) ((DataSnapshot) iterator.next()).getValue();
-			usernameUpdate = (String) ((DataSnapshot) iterator.next()).getValue();
+			String messageUpdate = (String) ((DataSnapshot) iterator.next()).getValue();
+			String usernameUpdate = (String) ((DataSnapshot) iterator.next()).getValue();
 			tvSingleText.append(usernameUpdate + ": " + messageUpdate + "\n");
 		}
 	}

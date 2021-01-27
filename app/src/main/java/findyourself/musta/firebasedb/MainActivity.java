@@ -3,15 +3,10 @@ package findyourself.musta.firebasedb;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -20,6 +15,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,28 +29,25 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
 
-	private ListView mChatRoomList = null;
-	private Button mBtnAddChatRoomName = null;
 	private EditText mEtChatRoomName = null;
-	private ArrayList<String> mListOfRooms = new ArrayList<>();
+	private final ArrayList<String> mListOfRooms = new ArrayList<>();
 	private ArrayAdapter<String> arrayAdapter = null;
 	private String username = null;
 	boolean userEntered = false, okElseClicked = false, positiveButtonPressed = false;
-	private DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
+	private final DatabaseReference root = FirebaseDatabase.getInstance().getReference().getRoot();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+		FloatingActionButton fab = findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -59,16 +56,16 @@ public class MainActivity extends AppCompatActivity {
 
 			}
 		});
-		mChatRoomList = (ListView) findViewById(R.id.chat_room_list);
-		mBtnAddChatRoomName = (Button) findViewById(R.id.btn_add_chat_room_name);
-		mEtChatRoomName = (EditText) findViewById(R.id.et_add_chat_room_name);
+		ListView mChatRoomList = findViewById(R.id.chat_room_list);
+		Button mBtnAddChatRoomName = findViewById(R.id.btn_add_chat_room_name);
+		mEtChatRoomName = findViewById(R.id.et_add_chat_room_name);
 		arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, mListOfRooms);
 		mChatRoomList.setAdapter(arrayAdapter);
 		addUsername();
 		mBtnAddChatRoomName.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Map<String, Object> map = new HashMap<String, Object>();
+				Map<String, Object> map = new HashMap<>();
 				map.put(mEtChatRoomName.getText().toString(), "");
 				//mListOfRooms.add(mEtChatRoomName.getText().toString());
 				root.updateChildren(map);
@@ -77,11 +74,10 @@ public class MainActivity extends AppCompatActivity {
 		});
 		root.addValueEventListener(new ValueEventListener() {
 			@Override
-			public void onDataChange(DataSnapshot dataSnapshot) {
-				Set<String> set = new HashSet<String>();
-				Iterator iterator = dataSnapshot.getChildren().iterator();
-				while (iterator.hasNext()) {
-					set.add(((DataSnapshot) iterator.next()).getKey());
+			public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+				Set<String> set = new HashSet<>();
+				for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+					set.add(snapshot.getKey());
 				}
 				mListOfRooms.clear();
 				mListOfRooms.addAll(set);
@@ -89,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 			}
 
 			@Override
-			public void onCancelled(DatabaseError databaseError) {
+			public void onCancelled(@NonNull DatabaseError databaseError) {
 
 			}
 		});
